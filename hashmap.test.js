@@ -14,20 +14,24 @@ test.set('jacket', 'blue');
 test.set('kite', 'pink');
 test.set('lion', 'golden');
 
-console.log(`GET value of lion (golden): `, test.get('lion'));
+// Overwrite
+test.set('lion', 'golden1');
+
+console.log(`GET value of lion (golden2): `, test.get('lion'));
+console.log(`LENGTH: (12)`, test.length());
 console.log(`KEYS return all the key values (apple..., lion): `, test.keys());
 console.log(
   `KEYS return all the value values (red..., golden): `,
   test.values()
 );
 console.log(`ENTRIES return all the entries[[],[]]: `, test.entries());
+console.log(`LENGTH: (0)`, test.length());
+console.log(`CAPACITY (16): `, test.getCapacity());
+test.set('moon', 'silver');
+test.set('lion', 'golden3');
+console.log(`GET value for lion (golden3)`, test.get('lion'));
+console.log(`CAPACITY (32): `, test.getCapacity());
+console.log(`ENTRIES return all the entries[[],[]]: `, test.entries());
 
-console.log(`LENGTH of stored keys (12):  `, test.length());
-console.log(`HAS key of hat (True):  `, test.has('hat'));
-console.log(`HAS key of star (False):  `, test.has('star'));
-console.log(`REMOVE key of hat (TRUE):  `, test.remove('hat'));
-console.log(`LENGTH of stored keys (11):  `, test.length());
-console.log(`REMOVE key of starfish (FALSE):  `, test.remove('starfish'));
-console.log(`CLEAR HASHMAP:  `, test.clear());
-console.log(`LENGTH of stored keys (0):  `, test.length());
-console.log(`KEYS return empty ARRAY []: `, test.keys());
+test.clear();
+console.log(test.getCapacity());
