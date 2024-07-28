@@ -2,9 +2,30 @@ const { LinkedList } = require('./linkedList');
 
 function HashMap() {
   let capacity = 16;
-  let size = 0;
   let loadFactor = 0.75;
+  let entriesCount = 0;
   let buckets = Array(capacity);
+
+  function isTooBig() {
+    return entriesCount > capacity * loadFactor;
+  }
+
+  function grow() {
+    capacity *= 2;
+    const oldBuckets = buckets;
+    buckets = Array(capacity);
+    entriesCount = 0;
+
+    oldBuckets.forEach((bucket) => {
+      if (bucket) {
+        let current = bucket.getHead();
+        while (current) {
+          set(current.data[0], current.data[1]);
+          current = current.next;
+        }
+      }
+    });
+  }
 
   function hash(key) {
     let hashCode = 0;
@@ -21,6 +42,7 @@ function HashMap() {
 
   function set(key, value) {
     // If key exist old value is overwritten.
+
     const index = hash(key);
 
     if (index < 0 || index >= buckets.length) {
@@ -35,7 +57,6 @@ function HashMap() {
     let current = bucket.getHead();
 
     // Check if key exist in linked list
-
     while (current) {
       if (current.data[0] === key) {
         current.data[1] = value; // Update existing value
@@ -45,6 +66,11 @@ function HashMap() {
     }
 
     bucket.add([key, value]);
+    entriesCount++;
+
+    if (isTooBig()) {
+      grow();
+    }
   }
 
   function get(key) {
@@ -102,6 +128,7 @@ function HashMap() {
       while (current) {
         if (current.data[0] === key) {
           bucket.removeFrom(i);
+          entriesCount--;
           return true;
         }
         current = current.next;
@@ -114,20 +141,13 @@ function HashMap() {
 
   function length() {
     // Returns number of stored keys
-    let count = 0;
-
-    buckets.forEach((bucket) => {
-      if (bucket) {
-        count += bucket.getSize();
-      }
-    });
-
-    return count;
+    return entriesCount;
   }
 
   function clear() {
     // Removes all entries from hash map
     capacity = 16;
+    entriesCount = 0;
     buckets = Array(capacity);
   }
 
@@ -179,7 +199,21 @@ function HashMap() {
     return result;
   }
 
-  return { set, get, has, remove, length, clear, keys, values, entries };
+  function getCapacity() {
+    return capacity;
+  }
+  return {
+    getCapacity,
+    set,
+    get,
+    has,
+    remove,
+    length,
+    clear,
+    keys,
+    values,
+    entries,
+  };
 }
 
 module.exports = { HashMap };
